@@ -27,9 +27,9 @@
 </section>
 <footer class="composerwrap"><div class="composer"><div class="row"><span class="attachname" id="attachmentName"></span></div><textarea id="prompt" rows="1" placeholder="Load a model to start chatting…" disabled></textarea><div class="composerbottom"><div class="tools"><button class="ghost" id="attachImage" disabled>＋ Image</button><span class="topmeta" id="tokenHint">Local inference</span></div><button class="send" id="send" disabled title="Send">↑</button></div></div><div class="hint">AI can make mistakes. Check important answers.</div></footer>
 </main></div>
-<input id="modelFile" type="file" accept=".gguf,application/octet-stream" hidden><input id="projectorFile" type="file" accept=".gguf,application/octet-stream" hidden><input id="imageFile" type="file" accept="image/*" hidden>
+<input id="modelFile" type="file" accept=".gguf,application/octet-stream" multiple hidden><input id="projectorFile" type="file" accept=".gguf,application/octet-stream" hidden><input id="imageFile" type="file" accept="image/*" hidden>
 <div class="modal" id="settingsModal"><div class="dialog"><h2>Model & settings</h2><p>Select local GGUF files. The files stay on your device and are not uploaded to GitHub Pages.</p>
-<div class="field"><label>Main GGUF model</label><div class="row"><button class="ghost" id="chooseModel">Choose model file</button><span id="modelFileName" class="topmeta">No file selected</span></div></div>
+<div class="field"><label>Main GGUF model (select multiple files for split models)</label><div class="row"><button class="ghost" id="chooseModel">Choose model file</button><span id="modelFileName" class="topmeta">No file selected</span></div></div>
 <div class="field"><label>Vision projector (optional, compatible models only)</label><div class="row"><button class="ghost" id="chooseProjector">Choose projector</button><span id="projectorFileName" class="topmeta">No projector selected</span></div></div>
 <div class="warning">Wllama runs llama.cpp in WebAssembly/WebGPU. The browser runtime and native Android/iOS llamaDart runtime are separate. Model architecture support can differ.</div>
 <div class="field"><label for="context">Context length</label><select id="context"><option value="2048">2,048</option><option value="4096" selected>4,096</option><option value="8192">8,192</option></select></div>
