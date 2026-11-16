@@ -31,7 +31,7 @@ class HyperAIApp extends StatelessWidget {
       useMaterial3: true,
       fontFamily: 'Arial',
       textTheme: const TextTheme(
-        headlineMedium: TextStyle(fontSize: 29, height: 1.2, fontWeight: FontWeight.w650, color: _text),
+        headlineMedium: TextStyle(fontSize: 29, height: 1.2, fontWeight: FontWeight.w600, color: _text),
         titleLarge: TextStyle(fontSize: 19, fontWeight: FontWeight.w600, color: _text),
         titleMedium: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: _text),
         bodyLarge: TextStyle(fontSize: 15, height: 1.55, color: _text),
