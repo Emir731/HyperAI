@@ -169,7 +169,7 @@ class _ChatPageState extends State<ChatPage> {
     final answer = StringBuffer();
     thread.messages.add(ChatMessage('', false));
     try {
-      final parts = <LlamaContent>[
+      final parts = <LlamaContentPart>[
         if (image != null) LlamaImageContent(path: image.path),
         LlamaTextContent(userText),
       ];
