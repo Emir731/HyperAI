@@ -1,57 +1,67 @@
 # Hyper AI
 
-Hyper AI is an offline-first Flutter assistant for study and image understanding. It runs a local GGUF model on the device; prompts and selected images are not sent to a cloud AI service by this app.
+Hyper AI is a Flutter chat app designed for local GGUF inference. Chat
+generation does not call a hosted AI service. Model files are selected from
+device storage and are not included in this repository.
 
-## Current implementation
+## Current functionality
 
-- Responsive chat interface with a compact conversation sidebar.
-- Local GGUF model selection and load/unload controls.
-- Optional multimodal projector selection for vision-capable GGUF models.
-- Streaming multi-turn chat using `llamadart`.
-- Image selection from the device gallery and image prompts.
-- Dark, low-distraction interface with one green accent and consistent rounded corners.
-- Android and iOS Flutter project targets.
+- Select a GGUF model and a separate multimodal projector.
+- Load, unload, and replace the local inference engine.
+- Stream responses and cancel the active generation.
+- Select a gallery image and send its local path with the prompt.
+- Keep chat history, model paths, language, and generation settings locally.
+- Create chats, rename or delete conversations, and edit, copy, or delete
+  messages.
+- Use English, Turkish, or Russian labels for the core chat and model flows.
+- Configure context length, temperature, output token limit, and CPU threads.
 
-## Model setup
+## Model files
 
-The app does not bundle model weights. Keep model files outside Git and select them from local device storage.
+For the intended Qwen3.5 4B vision setup, select:
 
-For the Qwen3.5 4B setup, choose these two files in **Settings → Model settings**:
+1. `Qwen3.5-4B-Q4_K_M.gguf`
+2. `mmproj-qwen3.5-4b-f16.gguf`
 
-1. Main model: `Qwen3.5-4B-Q4_K_M.gguf`
-2. Vision projector: `mmproj-qwen3.5-4b-f16.gguf`
+The app passes the model and projector as local `ModelSource.path` values to
+llamaDart and passes selected images as `LlamaImageContent(path: ...)`. The
+llama.cpp runtime used by llamaDart supports GGUF projector inputs. Qwen3.5
+support depends on the llama.cpp revision bundled by the resolved
+llamaDart version and a compatible model/projector pair. This repository has
+not been qualified with the named model files on a physical phone; successful
+loading and image understanding are not guaranteed until that device check.
 
-The main model and its projector must be a compatible pair. The model must be copied to the phone before loading it. On Android, use the file picker to select each file.
+The Android target has no app-defined Internet permission. The runtime and
+Flutter build tooling may need internet access during installation/build to
+download their native artifacts. Once dependencies and model files are local,
+inference itself is device-local.
 
-## Development requirements
+## Build and checks
 
-- Flutter 3.38.6 or newer
-- Dart 3.10.7 or newer
-- iOS deployment target 16.4 or newer for the current `llamadart` Flutter runtime
-- Android device with sufficient free RAM and storage for the selected model
+Requirements from the llamaDart installation guide are Flutter 3.38.6+, Dart
+3.10.7+, and iOS 16.4+. This app targets Android and iOS.
 
-Install dependencies and run:
-
-```bash
+```sh
 flutter pub get
 flutter analyze
 flutter test
-flutter run
-```
-
-Build an Android APK:
-
-```bash
 flutter build apk --release
+flutter build ios --no-codesign
 ```
 
-## Important notes
+Model weights, API keys, and personal data must not be committed.
 
-- Model loading and generation performance depend on the device, available memory, model quantization and native backend support.
-- A 4B multimodal model can require substantial memory. Close other apps if the device reports memory pressure.
-- The repository currently includes the first local-inference integration pass. It still needs validation on a physical Android device with the exact Qwen3.5 files, plus automated tests and further work on persistent chat history, message actions, user-facing generation settings and language selection.
-- No model files, API keys or personal data should be committed to this repository.
+## Known limitations
 
-## Privacy
+- App persistence currently uses local preferences; image paths refer to
+  picker-managed files and can become unavailable if the OS clears temporary
+  storage.
+- The UI does not expose a selectable GPU backend. llamaDart's automatic
+  backend selection remains in effect; GPU availability is runtime/device
+  specific.
+- Exact Qwen3.5 4B model/projector operation, memory use, and performance need
+  validation on the target Xiaomi 11T Pro. An 8 GB device may still hit memory
+  pressure with a large context or high-resolution image.
+- Builds and automated tests must be run after `flutter pub get` succeeds in
+  an environment with access to pub.dev and the native artifact hosts.
 
-Inference is designed to run locally. Network access may still be used by the operating system or package/build tooling during installation and updates; the chat-generation code does not call a hosted AI endpoint.
