@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090d18">
+  <meta name="description" content="Hyper AI is a private, on-device AI assistant for local GGUF model inference.">
+  <title>Hyper AI — Your AI, on your device</title>
+  <style>
+    :root{color-scheme:dark;--bg:#090d18;--panel:#111827;--muted:#9aa7bd;--text:#f4f7ff;--line:rgba(255,255,255,.1);--a:#8b9cff;--b:#63e6c4}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 75% 0%,rgba(83,105,255,.19),transparent 38%),radial-gradient(ellipse at 10% 35%,rgba(39,212,171,.09),transparent 35%),var(--bg);color:var(--text);font:16px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+    a{color:inherit;text-decoration:none}.wrap{width:min(1120px,calc(100% - 40px));margin:auto}.nav{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{display:flex;gap:12px;align-items:center;font-weight:750;letter-spacing:-.03em}.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#91a2ff,#5de4c3);display:grid;place-items:center;color:#07111c;font-weight:900;font-size:19px;box-shadow:0 8px 28px #7189ff38}.navlinks{display:flex;gap:24px;color:var(--muted);font-size:14px}.navlinks a:hover,.textlink:hover{color:white}
+    .hero{padding:100px 0 84px;display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}.eyebrow{display:inline-flex;gap:9px;align-items:center;padding:7px 12px;border:1px solid #8b9cff55;background:#8b9cff12;border-radius:999px;color:#c4ccff;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}.dot{width:7px;height:7px;border-radius:50%;background:var(--b);box-shadow:0 0 12px var(--b)}h1{font-size:clamp(48px,7vw,78px);line-height:1.02;letter-spacing:-.065em;margin:24px 0}h1 span{background:linear-gradient(100deg,#a8b4ff 15%,#72ecd0 90%);-webkit-background-clip:text;background-clip:text;color:transparent}.lead{max-width:590px;color:var(--muted);font-size:18px}.actions{display:flex;gap:13px;flex-wrap:wrap;margin-top:32px}.btn{padding:12px 18px;border-radius:12px;font-weight:700;font-size:14px;border:1px solid var(--line);transition:.2s}.primary{background:linear-gradient(110deg,#a6b2ff,#72e9cd);color:#07111b;border:0}.btn:hover{transform:translateY(-2px);filter:brightness(1.08)}.visual{min-height:350px;border:1px solid var(--line);border-radius:26px;background:linear-gradient(145deg,#1b2540,#101827 65%);padding:22px;box-shadow:0 30px 100px #0007;position:relative;overflow:hidden}.visual:before{content:"";position:absolute;width:250px;height:250px;border-radius:50%;background:#7e91ff35;filter:blur(65px);right:-50px;top:-65px}.window{position:relative;border:1px solid #ffffff20;border-radius:17px;background:#0a1020dd;overflow:hidden}.windowtop{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;gap:7px}.windowtop i{width:8px;height:8px;border-radius:50%;background:#59647b}.chat{padding:22px;display:grid;gap:18px}.bubble{padding:13px 15px;border-radius:14px;font-size:13px;max-width:88%}.user{justify-self:end;background:#6578e52b;border:1px solid #8798ff42}.assistant{background:#ffffff0b;border:1px solid var(--line);color:#dce5f6}.typing{display:flex;gap:5px;padding:6px 2px}.typing i{width:5px;height:5px;border-radius:50%;background:#7fe5ce}
+    section{padding:58px 0}.sectionhead{max-width:650px;margin-bottom:28px}.kicker{color:var(--b);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}h2{font-size:clamp(30px,4vw,42px);letter-spacing:-.045em;line-height:1.12;margin:10px 0 12px}.sub{color:var(--muted);margin:0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{padding:23px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#ffffff0a,#ffffff03)}.icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:#8b9cff1c;color:#c4ceff;font-size:19px}.card h3{font-size:17px;margin:17px 0 7px}.card p{color:var(--muted);font-size:14px;margin:0}.note{margin-top:26px;padding:18px 20px;border:1px solid #72e9cd40;background:#72e9cd0a;border-radius:14px;color:#b9c8d7;font-size:14px}.note strong{color:#dffff6}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:step}.step{padding:22px;border-top:1px solid var(--line);counter-increment:step}.step:before{content:"0" counter(step);color:var(--b);font-weight:800;font-size:12px;letter-spacing:.1em}.step h3{margin:12px 0 6px}.step p{margin:0;color:var(--muted);font-size:14px}.cta{margin:40px 0 80px;padding:38px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(110deg,#7f91ff1c,#5de4c40d);display:flex;align-items:center;justify-content:space-between;gap:25px}.cta p{color:var(--muted);margin:7px 0 0}.footer{border-top:1px solid var(--line);padding:25px 0 35px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+    @media(max-width:800px){.hero{grid-template-columns:1fr;padding:70px 0 55px;gap:35px}.visual{min-height:300px}.grid,.steps{grid-template-columns:1fr}.navlinks{gap:12px}.cta{align-items:flex-start;flex-direction:column}}@media(max-width:480px){.wrap{width:min(100% - 28px,1120px)}.nav{height:66px}.navlinks a:first-child{display:none}h1{font-size:48px}.lead{font-size:16px}.visual{padding:13px}.chat{padding:15px}}
+  </style>
+</head>
+<body>
+  <header class="wrap nav">
+    <a class="brand" href="#" aria-label="Hyper AI home"><span class="logo">H</span><span>Hyper AI</span></a>
+    <nav class="navlinks" aria-label="Main navigation"><a href="#features">Features</a><a href="#workflow">How it works</a><a href="https://github.com/Emir731/HyperAI">GitHub ↗</a></nav>
+  </header>
+  <main>
+    <div class="wrap hero">
+      <div>
+        <div class="eyebrow"><span class="dot"></span> Private. Local. Personal.</div>
+        <h1>Your AI.<br><span>Your device.</span></h1>
+        <p class="lead">Hyper AI is an on-device assistant built around local GGUF models. Keep model files on your device and run conversations without sending prompts to a hosted AI service.</p>
+        <div class="actions"><a class="btn primary" href="https://github.com/Emir731/HyperAI">Explore the project ↗</a><a class="btn" href="#features">Discover features</a></div>
+      </div>
+      <div class="visual" aria-label="Illustration of a Hyper AI chat interface">
+        <div class="window"><div class="windowtop"><i></i><i></i><i></i></div><div class="chat">
+          <div class="bubble user">Explain this concept in simple terms.</div>
+          <div class="bubble assistant">Absolutely. I can help you work through it step by step, using the model loaded on your device.</div>
+          <div class="typing"><i></i><i></i><i></i></div>
+        </div></div>
+      </div>
+    </div>
+    <section class="wrap" id="features">
+      <div class="sectionhead"><div class="kicker">Built for local AI</div><h2>Useful tools, with privacy at the core.</h2><p class="sub">A focused interface for running and managing local language models.</p></div>
+      <div class="grid">
+        <article class="card"><div class="icon">⌘</div><h3>Local GGUF models</h3><p>Select a model stored on your device. Model files are not bundled with the app or uploaded by Hyper AI.</p></article>
+        <article class="card"><div class="icon">◈</div><h3>Text and image input</h3><p>Choose a local image and include it with your prompt when using a compatible multimodal model.</p></article>
+        <article class="card"><div class="icon">⏵</div><h3>Streaming responses</h3><p>See generated text as it arrives and cancel an active response when you need to.</p></article>
+        <article class="card"><div class="icon">▤</div><h3>Conversation controls</h3><p>Create, rename, and delete chats. Edit, copy, or remove individual messages.</p></article>
+        <article class="card"><div class="icon">⚙</div><h3>Generation settings</h3><p>Adjust context length, temperature, output token limit, and CPU thread settings.</p></article>
+        <article class="card"><div class="icon">文</div><h3>Multilingual interface</h3><p>Core chat and model flows include English, Turkish, and Russian labels.</p></article>
+      </div>
+      <div class="note"><strong>Compatibility note:</strong> Hyper AI's local inference runtime is designed for native Android and iOS devices. This GitHub Pages website is the project homepage; it does not run the local GGUF chat engine in your browser.</div>
+    </section>
+    <section class="wrap" id="workflow">
+      <div class="sectionhead"><div class="kicker">Getting started</div><h2>Bring your own model.</h2><p class="sub">Hyper AI keeps model selection in your hands.</p></div>
+      <div class="steps">
+        <article class="step"><h3>Get the app source</h3><p>Open the repository to review the Flutter project and its build instructions.</p></article>
+        <article class="step"><h3>Choose compatible files</h3><p>Select a GGUF model and, for supported vision models, its matching multimodal projector.</p></article>
+        <article class="step"><h3>Run locally</h3><p>Load the model on your device and start a conversation. Performance depends on your hardware and model.</p></article>
+      </div>
+    </section>
+    <div class="wrap"><div class="cta"><div><div class="kicker">Open source project</div><h2>Take a closer look at Hyper AI.</h2><p>Explore the source code, setup notes, and current development.</p></div><a class="btn primary" href="https://github.com/Emir731/HyperAI">View on GitHub ↗</a></div></div>
+  </main>
+  <footer class="wrap footer"><span>© 2026 Hyper AI · Built for on-device AI</span><span><a class="textlink" href="https://github.com/Emir731/HyperAI">Source code on GitHub ↗</a></span></footer>
+</body>
+</html>
