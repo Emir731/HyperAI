@@ -1,7 +1,7 @@
 import { Wllama } from "https://cdn.jsdelivr.net/npm/@wllama/wllama@3.13.0/esm/index.js";
 import WasmFromCDN from "https://cdn.jsdelivr.net/npm/@wllama/wllama@3.13.0/esm/wasm-from-cdn.js";
 const $=id=>document.getElementById(id);
-const s={runtime:null,model:null,projector:null,image:null,busy:false,abort:null,threads:[],active:null};
+const s={runtime:null,modelFiles:[],projector:null,image:null,busy:false,abort:null,threads:[],active:null};
 const system="You are Hyper AI, a helpful offline study assistant. Help with mathematics, physics, chemistry, geometry, programming and languages. Explain clearly and accurately. Reply in the language the user uses.";
 const maxFile=2*1024*1024*1024;
 function status(t){$("status").textContent=t}
@@ -14,17 +14,17 @@ function render(){const host=$("messages");host.replaceChildren();const t=active
 function newChat(){s.active=null;history();render();$("prompt").focus()}
 function settings(){$("settingsModal").classList.add("open")}
 function closeSettings(){$("settingsModal").classList.remove("open")}
-function choose(input,key){input.click();input.onchange=()=>{const f=input.files&&input.files[0];if(!f)return;if(f.size>maxFile){$("loadError").textContent="This browser build accepts individual GGUF files up to 2 GB. Choose a smaller quantization or split model.";return}s[key]=f;$(key==="model"?"modelFileName":"projectorFileName").textContent=f.name;$("loadError").textContent=""}}
+function choose(input,key){input.click();input.onchange=()=>{const picked=Array.from(input.files||[]);if(!picked.length)return;if(key==="model"){if(picked.some(f=>f.size>maxFile)){$("loadError").textContent="Each GGUF shard must be under 2 GB. Split large models into smaller GGUF shards first.";return}s.modelFiles=picked.sort((a,b)=>a.name.localeCompare(b.name));$("modelFileName").textContent=s.modelFiles.length===1?s.modelFiles[0].name:s.modelFiles.length+" GGUF shards selected";}else{const f=picked[0];if(f.size>maxFile){$("loadError").textContent="The projector file must be under 2 GB.";return}s.projector=f;$("projectorFileName").textContent=f.name;}$("loadError").textContent=""}}
 function explainError(e){const m=String(e&&e.message||e);if(/memory|out of memory|allocation/i.test(m))return"Browser memory was exhausted. Try a smaller GGUF quantization or reduce context length.";if(/unsupported|architecture|model type/i.test(m))return"This GGUF architecture may not be supported by the browser llama.cpp runtime.";return m}
 async function load(){
- if(!s.model){$("loadError").textContent="Choose a main GGUF model first.";return}
+ if(!s.modelFiles.length){$("loadError").textContent="Choose a main GGUF model first.";return}
  $("loadModel").disabled=true;$("loadError").textContent="";status("Loading model…");progress(0);
  try{
   if(s.runtime){await s.runtime.exit();s.runtime=null}
   const w=new Wllama(WasmFromCDN,{suppressNativeLog:true});
-  const files=[s.model];if(s.projector)files.push(s.projector);
+  const files=[...s.modelFiles];if(s.projector)files.push(s.projector);
   await w.loadModel(files,{n_ctx:Number($("context").value),n_gpu_layers:Number($("gpuLayers").value),n_threads:Math.max(1,Math.floor((navigator.hardwareConcurrency||2)/2))});
-  s.runtime=w;$("modelLamp").classList.add("on");$("modelLabel").textContent=s.model.name;$("tokenHint").textContent=w.isSupportWebGPU()?"WebGPU available":"WASM inference";$("welcome").style.display="none";status("Model loaded");busy(false);closeSettings()
+  s.runtime=w;$("modelLamp").classList.add("on");$("modelLabel").textContent=s.modelFiles[0].name+(s.modelFiles.length>1?" (+"+(s.modelFiles.length-1)+" shards)":"");$("tokenHint").textContent=w.isSupportWebGPU()?"WebGPU available":"WASM inference";$("welcome").style.display="none";status("Model loaded");busy(false);closeSettings()
  }catch(e){status("Model load failed");$("loadError").textContent=explainError(e);if(s.runtime){try{await s.runtime.exit()}catch{}s.runtime=null}}
  finally{$("loadModel").disabled=false;progress(0,false)}
 }
