@@ -1,4 +1,4 @@
-# offline_ai
+# HyperAi
 
 A new Flutter project.
 
