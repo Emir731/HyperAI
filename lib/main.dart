@@ -837,7 +837,11 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                         ],
                         FilledButton(
-                          onPressed: _downloadingModels ? null : _downloadModels,
+                          onPressed: _downloadingModels || _loadingModel
+                              ? null
+                              : (_modelPath == null || _projectorPath == null
+                                  ? _downloadModels
+                                  : (_engine == null ? _loadModel : _showSettings)),
                           style: FilledButton.styleFrom(
                             backgroundColor: _accent,
                             foregroundColor: _bg,
@@ -845,9 +849,13 @@ class _ChatPageState extends State<ChatPage> {
                           child: Text(
                             _downloadingModels
                                 ? tr('downloading')
-                                : (_modelPath == null || _projectorPath == null
-                                    ? tr('downloadModels')
-                                    : tr('downloadAgain')),
+                                : (_loadingModel
+                                    ? tr('loading')
+                                    : (_modelPath == null || _projectorPath == null
+                                        ? tr('downloadModels')
+                                        : (_engine == null
+                                            ? tr('load')
+                                            : tr('ready')))),
                             textAlign: TextAlign.center,
                           ),
                         ),
