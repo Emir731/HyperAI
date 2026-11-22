@@ -914,10 +914,7 @@ class _ChatPageState extends State<ChatPage> {
                 IconButton(
                   tooltip: tr('addImage'),
                   onPressed: _sending ? null : _pickImage,
-                  icon: const Icon(
-                    PhosphorIconsRegular.image,
-                    color: _muted,
-                  ),
+                  icon: const Icon(PhosphorIconsRegular.image, color: _muted),
                 ),
                 Expanded(
                   child: TextField(
