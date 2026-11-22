@@ -59,7 +59,8 @@ class AppStrings {
       'downloadAgain': 'Download models again',
       'downloading': 'Downloading model files…',
       'cancelDownload': 'Pause download',
-      'downloadComplete': 'Model files are ready. Open settings and load the model.',
+      'downloadComplete':
+          'Model files are ready. Tap Load model or open settings.',
       'downloadPausedOrFailed': 'Download paused or failed. Retry to resume.',
     },
     'tr': {
@@ -120,7 +121,8 @@ class AppStrings {
       'downloadAgain': 'Modelleri yeniden indir',
       'downloading': 'Model dosyaları indiriliyor…',
       'cancelDownload': 'İndirmeyi duraklat',
-      'downloadComplete': 'Model dosyaları hazır. Ayarlardan modeli yükleyin.',
+      'downloadComplete':
+          'Model dosyaları hazır. Modeli yüklemek için düğmeye basın.',
       'downloadPausedOrFailed': 'İndirme durakladı veya başarısız oldu. Sürdürmek için tekrar deneyin.',
     },
     'ru': {
