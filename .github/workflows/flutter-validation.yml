@@ -21,7 +21,7 @@ env:
 
 jobs:
   android:
-    name: Android analyze, tests and debug APK
+    name: Android analyze, tests and APKs
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -64,6 +64,17 @@ jobs:
         with:
           name: hyperai-android-debug
           path: build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Build Android arm64 release APK
+        run: flutter build apk --release --target-platform android-arm64
+
+      - name: Upload Android arm64 release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: hyperai-android-arm64-release
+          path: build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
           retention-days: 14
 
