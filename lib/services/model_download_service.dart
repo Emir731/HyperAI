@@ -49,9 +49,7 @@ class ModelDownloadService {
 
   Future<Directory> _modelDirectory() async {
     final root = await getApplicationSupportDirectory();
-    final directory = Directory(
-      '${root.path}${Platform.pathSeparator}models',
-    );
+    final directory = Directory('${root.path}${Platform.pathSeparator}models');
     await directory.create(recursive: true);
     return directory;
   }
