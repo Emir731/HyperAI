@@ -55,6 +55,12 @@ class AppStrings {
       'chemistry': 'Chemistry',
       'geometry': 'Geometry',
       'languages': 'Languages',
+      'downloadModels': 'Download model files (about 3.45 GB)',
+      'downloadAgain': 'Download models again',
+      'downloading': 'Downloading model files…',
+      'cancelDownload': 'Pause download',
+      'downloadComplete': 'Model files are ready. Open settings and load the model.',
+      'downloadPausedOrFailed': 'Download paused or failed. Retry to resume.',
     },
     'tr': {
       'new': 'Yeni sohbet',
@@ -110,6 +116,12 @@ class AppStrings {
       'chemistry': 'Kimya',
       'geometry': 'Geometri',
       'languages': 'Diller',
+      'downloadModels': 'Model dosyalarını indir (yaklaşık 3,45 GB)',
+      'downloadAgain': 'Modelleri yeniden indir',
+      'downloading': 'Model dosyaları indiriliyor…',
+      'cancelDownload': 'İndirmeyi duraklat',
+      'downloadComplete': 'Model dosyaları hazır. Ayarlardan modeli yükleyin.',
+      'downloadPausedOrFailed': 'İndirme durakladı veya başarısız oldu. Sürdürmek için tekrar deneyin.',
     },
     'ru': {
       'new': 'Новый чат',
@@ -165,6 +177,12 @@ class AppStrings {
       'chemistry': 'Химия',
       'geometry': 'Геометрия',
       'languages': 'Языки',
+      'downloadModels': 'Скачать файлы модели (около 3,45 ГБ)',
+      'downloadAgain': 'Скачать модели повторно',
+      'downloading': 'Загрузка файлов модели…',
+      'cancelDownload': 'Приостановить загрузку',
+      'downloadComplete': 'Файлы готовы. Откройте настройки и загрузите модель.',
+      'downloadPausedOrFailed': 'Загрузка приостановлена или не удалась. Повторите для продолжения.',
     },
   };
   String operator [](String key) =>
