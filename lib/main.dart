@@ -163,9 +163,12 @@ class _ChatPageState extends State<ChatPage> {
   Future<void> _persist() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('language', _language);
-    if (_modelPath != null) await prefs.setString('modelPath', _modelPath!);
-    if (_projectorPath != null)
+    if (_modelPath != null) {
+      await prefs.setString('modelPath', _modelPath!);
+    }
+    if (_projectorPath != null) {
       await prefs.setString('projectorPath', _projectorPath!);
+    }
     await prefs.setInt('context', _contextLength);
     await prefs.setInt('maxTokens', _maxTokens);
     await prefs.setDouble('temperature', _temperature);
@@ -238,11 +241,12 @@ class _ChatPageState extends State<ChatPage> {
       });
       await _persist();
     } catch (e) {
-      if (mounted && !_stopRequested)
+      if (mounted && !_stopRequested) {
         setState(() {
           _status = tr('loadFailed');
           _error = e.toString();
         });
+      }
     } finally {
       if (mounted) setState(() => _loadingModel = false);
     }
@@ -255,13 +259,14 @@ class _ChatPageState extends State<ChatPage> {
       _status = tr('unloading');
     });
     await _inferenceService.unload();
-    if (mounted)
+    if (mounted) {
       setState(() {
         _status = tr('noModel');
         for (final t in _threads) {
           t.session = null;
         }
       });
+    }
   }
 
   Future<void> _pickImage() async {
@@ -296,7 +301,7 @@ class _ChatPageState extends State<ChatPage> {
         );
     _threads.remove(thread);
     _threads.insert(0, thread);
-    if (_active == null) _active = thread;
+    _active ??= thread;
     thread.session ??= _createSession(thread, engine);
     final image = _image;
     final userText = prompt.isEmpty ? tr('explainImage') : prompt;
@@ -335,11 +340,12 @@ class _ChatPageState extends State<ChatPage> {
       }
       await iterator.cancel();
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           thread.messages.removeLast();
           _error = '${tr('failure')}: $e';
         });
+      }
     } finally {
       _generation = null;
       if (mounted) setState(() => _sending = false);
@@ -457,12 +463,13 @@ class _ChatPageState extends State<ChatPage> {
 
   void _scrollToEnd() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scroll.hasClients)
+      if (_scroll.hasClients) {
         _scroll.animateTo(
           _scroll.position.maxScrollExtent,
           duration: const Duration(milliseconds: 160),
           curve: Curves.easeOut,
         );
+      }
     });
   }
 
@@ -908,7 +915,7 @@ class _ChatPageState extends State<ChatPage> {
                   tooltip: tr('addImage'),
                   onPressed: _sending ? null : _pickImage,
                   icon: const Icon(
-                    PhosphorIconsRegular.imagePlus,
+                    PhosphorIconsRegular.image,
                     color: _muted,
                   ),
                 ),
