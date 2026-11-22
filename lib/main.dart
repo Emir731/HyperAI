@@ -105,7 +105,6 @@ class _ChatPageState extends State<ChatPage> {
   bool _downloadingModels = false;
   int _downloadedBytes = 0;
   int _downloadTotalBytes = ModelDownloadService.totalBytes;
-  String _downloadFileName = '';
   bool _sending = false;
   bool _sidebarOpen = true;
   String? _error;
@@ -213,7 +212,6 @@ class _ChatPageState extends State<ChatPage> {
           setState(() {
             _downloadedBytes = progress.receivedBytes;
             _downloadTotalBytes = progress.totalBytes;
-            _downloadFileName = progress.fileName;
           });
         },
       );
