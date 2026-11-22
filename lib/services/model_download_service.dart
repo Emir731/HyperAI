@@ -138,6 +138,12 @@ class ModelDownloadService {
     }
 
     var offset = await partial.exists() ? await partial.length() : 0;
+    if (offset == expectedBytes) {
+      await partial.rename(target.path);
+      final digest = await sha256.bind(target.openRead()).first;
+      await File('${target.path}.sha256').writeAsString('$digest  $fileName\n');
+      return;
+    }
     final client = HttpClient()
       ..connectionTimeout = const Duration(seconds: 35)
       ..idleTimeout = const Duration(seconds: 90);
@@ -151,6 +157,12 @@ class ModelDownloadService {
       }
 
       final response = await request.close();
+      if (response.statusCode == HttpStatus.partialContent && offset > 0) {
+        final contentRange = response.headers.value(HttpHeaders.contentRangeHeader);
+        if (contentRange == null || !contentRange.startsWith('bytes $offset-')) {
+          throw HttpException('Server returned an invalid resume range for $fileName.');
+        }
+      }
       if (response.statusCode == HttpStatus.ok && offset > 0) {
         offset = 0;
       } else if (response.statusCode != HttpStatus.ok &&
