@@ -45,19 +45,8 @@ jobs:
       - name: Resolve dependencies
         run: flutter pub get
 
-      - name: Format Dart sources
-        run: dart format lib/main.dart lib/l10n/app_strings.dart lib/services/model_download_service.dart
-
-      - name: Upload formatted Dart source snapshot
-        uses: actions/upload-artifact@v4
-        with:
-          name: hyperai-formatted-dart-sources
-          path: |
-            lib/main.dart
-            lib/l10n/app_strings.dart
-            lib/services/model_download_service.dart
-          if-no-files-found: error
-          retention-days: 3
+      - name: Verify Dart formatting
+        run: dart format --output=none --set-exit-if-changed .
 
       - name: Analyze
         run: flutter analyze
