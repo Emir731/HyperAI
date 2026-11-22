@@ -114,6 +114,33 @@ class _ChatPageState extends State<ChatPage> {
 
   String tr(String key) => AppStrings(_language)[key];
 
+  static const _systemPrompt =
+      'You are Hyper AI, a helpful offline study assistant. Help with school '
+      'subjects including mathematics, physics, chemistry and geometry. Reply '
+      'in the language the user uses (Turkish, English or Russian). Explain '
+      'clearly and accurately.';
+
+  ChatSession _createSession(ChatThread thread, LlamaEngine engine) {
+    final session = ChatSession(engine)..systemPrompt = _systemPrompt;
+    for (final message in thread.messages) {
+      final imagePath = message.imagePath;
+      final parts = <LlamaContentPart>[
+        if (imagePath != null && File(imagePath).existsSync())
+          LlamaImageContent(path: imagePath),
+        if (message.text.isNotEmpty) LlamaTextContent(message.text),
+      ];
+      if (parts.isNotEmpty) {
+        session.addMessage(
+          LlamaChatMessage.withContent(
+            role: message.isUser ? LlamaChatRole.user : LlamaChatRole.assistant,
+            content: parts,
+          ),
+        );
+      }
+    }
+    return session;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -205,9 +232,8 @@ class _ChatPageState extends State<ChatPage> {
       setState(() {
         _engine = loaded;
         for (final thread in _threads) {
-          thread.session = null;
+          thread.session = _createSession(thread, loaded);
         }
-        _active?.session = ChatSession(loaded)..systemPrompt = 'You are Hyper AI, a helpful offline study assistant. Help with school subjects including mathematics, physics, chemistry and geometry. Reply in the language the user uses (Turkish, English or Russian). Explain clearly and accurately.';
         _status = tr('ready');
       });
       await _persist();
@@ -271,6 +297,7 @@ class _ChatPageState extends State<ChatPage> {
     _threads.remove(thread);
     _threads.insert(0, thread);
     if (_active == null) _active = thread;
+    thread.session ??= _createSession(thread, engine);
     final image = _image;
     final userText = prompt.isEmpty ? tr('explainImage') : prompt;
     setState(() {
@@ -280,7 +307,6 @@ class _ChatPageState extends State<ChatPage> {
       _sending = true;
       _error = null;
     });
-    thread.session ??= ChatSession(engine)..systemPrompt = 'You are Hyper AI, a helpful offline study assistant. Help with school subjects including mathematics, physics, chemistry and geometry. Reply in the language the user uses (Turkish, English or Russian). Explain clearly and accurately.';
     final answer = StringBuffer();
     thread.messages.add(ChatMessage('', false));
     try {
@@ -385,7 +411,12 @@ class _ChatPageState extends State<ChatPage> {
       return;
     }
     if (action == 'delete') {
-      setState(() => _active!.messages.remove(message));
+      setState(() {
+        _active!.messages.remove(message);
+        _active!.session = _engine == null
+            ? null
+            : _createSession(_active!, _engine!);
+      });
       await _persist();
       return;
     }
@@ -413,8 +444,12 @@ class _ChatPageState extends State<ChatPage> {
         message.text = result;
         final idx = _active!.messages.indexOf(message);
         if (idx + 1 < _active!.messages.length &&
-            !_active!.messages[idx + 1].isUser)
+            !_active!.messages[idx + 1].isUser) {
           _active!.messages.removeRange(idx + 1, _active!.messages.length);
+        }
+        _active!.session = _engine == null
+            ? null
+            : _createSession(_active!, _engine!);
       });
       await _persist();
     }
@@ -627,7 +662,7 @@ class _ChatPageState extends State<ChatPage> {
                       onTap: () => setState(() {
                         _active = t;
                         if (_engine != null && t.session == null) {
-                          t.session = ChatSession(_engine!);
+                          t.session = _createSession(t, _engine!);
                         }
                       }),
                     );
