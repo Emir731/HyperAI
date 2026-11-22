@@ -16,6 +16,27 @@ device storage and are not included in this repository.
 - Use English, Turkish, or Russian labels for the core chat and model flows.
 - Configure context length, temperature, output token limit, and CPU threads.
 
+## First-run model setup
+
+On first launch, the welcome screen offers a model download action. It downloads
+the Qwen3.5 4B Q4_K_M model and its F16 vision projector from the public
+`gguf/Qwen3.5-4B-GGUF` Hugging Face repository into app-private storage.
+The combined download is about 3.45 GB. Use Wi-Fi and keep at least 4 GB of
+free storage available. The app displays combined progress and keeps partial
+`.part` files; pausing or losing the connection preserves partial data so a
+later retry can continue with an HTTP Range request.
+
+The downloader checks exact expected file sizes and writes a local SHA-256
+fingerprint sidecar after each complete file. The source repository does not
+publish a trusted SHA-256 manifest for these quantized artifacts, so this
+fingerprint is an audit value, not a comparison against an upstream checksum.
+No Hugging Face token is embedded in the app. The source repository must remain
+public for first-run downloads to work.
+
+After download, open Model settings and press Load model. Later launches reuse
+the files in app-private storage; inference itself works offline. Manual file
+selection remains available.
+
 ## Model files
 
 For the intended Qwen3.5 4B vision setup, select:
@@ -31,7 +52,7 @@ llamaDart version and a compatible model/projector pair. This repository has
 not been qualified with the named model files on a physical phone; successful
 loading and image understanding are not guaranteed until that device check.
 
-The Android target has no app-defined Internet permission. The runtime and
+The Android app requests Internet permission for the optional first-run model download. The runtime and
 Flutter build tooling may need internet access during installation/build to
 download their native artifacts. Once dependencies and model files are local,
 inference itself is device-local.
