@@ -50,7 +50,7 @@ class ModelDownloadService {
   Future<Directory> _modelDirectory() async {
     final root = await getApplicationSupportDirectory();
     final directory = Directory(
-      '\${root.path}\${Platform.pathSeparator}models',
+      '${root.path}${Platform.pathSeparator}models',
     );
     await directory.create(recursive: true);
     return directory;
@@ -58,9 +58,9 @@ class ModelDownloadService {
 
   Future<ModelFiles?> localFiles() async {
     final directory = await _modelDirectory();
-    final model = File('\${directory.path}\${Platform.pathSeparator}$modelFile');
+    final model = File('${directory.path}${Platform.pathSeparator}$modelFile');
     final projector = File(
-      '\${directory.path}\${Platform.pathSeparator}$projectorFile',
+      '${directory.path}${Platform.pathSeparator}$projectorFile',
     );
     if (await model.exists() &&
         await projector.exists() &&
@@ -78,9 +78,9 @@ class ModelDownloadService {
     final directory = await _modelDirectory();
     var completed = 0;
 
-    final model = File('\${directory.path}\${Platform.pathSeparator}$modelFile');
+    final model = File('${directory.path}${Platform.pathSeparator}$modelFile');
     final projector = File(
-      '\${directory.path}\${Platform.pathSeparator}$projectorFile',
+      '${directory.path}${Platform.pathSeparator}$projectorFile',
     );
 
     if (await model.exists() && await model.length() == modelBytes) {
@@ -132,7 +132,7 @@ class ModelDownloadService {
     if (await target.exists() && await target.length() != expectedBytes) {
       await target.delete();
     }
-    final partial = File('\${target.path}.part');
+    final partial = File('${target.path}.part');
     if (await partial.exists() && await partial.length() > expectedBytes) {
       await partial.delete();
     }
@@ -156,7 +156,7 @@ class ModelDownloadService {
       } else if (response.statusCode != HttpStatus.ok &&
           response.statusCode != HttpStatus.partialContent) {
         throw HttpException(
-          'HTTP \${response.statusCode} while downloading $fileName',
+          'HTTP ${response.statusCode} while downloading $fileName',
           uri: request.uri,
         );
       }
@@ -205,7 +205,7 @@ class ModelDownloadService {
       // The source Hub does not publish a trusted SHA-256 manifest for these
       // quantized artifacts; this sidecar records a local audit fingerprint.
       final digest = await sha256.bind(target.openRead()).first;
-      await File('\${target.path}.sha256').writeAsString('$digest  $fileName\n');
+      await File('${target.path}.sha256').writeAsString('$digest  $fileName\n');
     } catch (error) {
       if (_cancelRequested) throw const ModelDownloadPaused();
       rethrow;
