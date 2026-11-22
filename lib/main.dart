@@ -13,6 +13,7 @@ import 'models/chat_thread.dart';
 import 'repositories/chat_repository.dart';
 import 'l10n/app_strings.dart';
 import 'services/local_inference_service.dart';
+import 'services/model_download_service.dart';
 
 void main() => runApp(const HyperAIApp());
 
@@ -90,6 +91,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final _chatRepository = ChatRepository();
   final _inferenceService = LocalInferenceService();
+  final _modelDownloader = ModelDownloadService();
   final _input = TextEditingController();
   final _scroll = ScrollController();
   final _picker = ImagePicker();
@@ -100,6 +102,10 @@ class _ChatPageState extends State<ChatPage> {
   String? _projectorPath;
   XFile? _image;
   bool _loadingModel = false;
+  bool _downloadingModels = false;
+  int _downloadedBytes = 0;
+  int _downloadTotalBytes = ModelDownloadService.totalBytes;
+  String _downloadFileName = '';
   bool _sending = false;
   bool _sidebarOpen = true;
   String? _error;
@@ -157,6 +163,16 @@ class _ChatPageState extends State<ChatPage> {
     _temperature = prefs.getDouble('temperature') ?? 0.7;
     _threadsCount = prefs.getInt('threads') ?? 4;
     _threads.addAll(await _chatRepository.loadThreads());
+    final cachedModels = await _modelDownloader.localFiles();
+    if (cachedModels != null &&
+        (_modelPath == null ||
+            _projectorPath == null ||
+            !await File(_modelPath!).exists() ||
+            !await File(_projectorPath!).exists())) {
+      _modelPath = cachedModels.modelPath;
+      _projectorPath = cachedModels.projectorPath;
+      await _persist();
+    }
     if (mounted) setState(() {});
   }
 
@@ -174,6 +190,49 @@ class _ChatPageState extends State<ChatPage> {
     await prefs.setDouble('temperature', _temperature);
     await prefs.setInt('threads', _threadsCount);
     await _chatRepository.saveThreads(_threads);
+  }
+
+  Future<void> _downloadModels() async {
+    if (_downloadingModels) return;
+    setState(() {
+      _downloadingModels = true;
+      _error = null;
+      _downloadedBytes = 0;
+      _downloadTotalBytes = ModelDownloadService.totalBytes;
+      _status = tr('downloading');
+    });
+    try {
+      final files = await _modelDownloader.downloadAll(
+        onProgress: (progress) {
+          if (!mounted) return;
+          setState(() {
+            _downloadedBytes = progress.receivedBytes;
+            _downloadTotalBytes = progress.totalBytes;
+            _downloadFileName = progress.fileName;
+          });
+        },
+      );
+      if (!mounted) return;
+      setState(() {
+        _modelPath = files.modelPath;
+        _projectorPath = files.projectorPath;
+        _status = tr('downloadComplete');
+      });
+      await _persist();
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _status = tr('downloadPausedOrFailed');
+          _error = e.toString();
+        });
+      }
+    } finally {
+      if (mounted) setState(() => _downloadingModels = false);
+    }
+  }
+
+  void _cancelModelDownload() {
+    _modelDownloader.cancel();
   }
 
   Future<void> _chooseModel() async {
@@ -753,9 +812,51 @@ class _ChatPageState extends State<ChatPage> {
                       ],
                     ),
                   ),
-                  TextButton(
-                    onPressed: _showSettings,
-                    child: Text(tr('setupAction')),
+                  SizedBox(
+                    width: 170,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (_downloadingModels) ...[
+                          LinearProgressIndicator(
+                            value: _downloadTotalBytes == 0
+                                ? null
+                                : _downloadedBytes / _downloadTotalBytes,
+                            color: _accent,
+                            backgroundColor: _panel2,
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            '${(_downloadedBytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} / ${(_downloadTotalBytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB',
+                            style: const TextStyle(fontSize: 10, color: _muted),
+                          ),
+                        ],
+                        FilledButton(
+                          onPressed: _downloadingModels ? null : _downloadModels,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: _accent,
+                            foregroundColor: _bg,
+                          ),
+                          child: Text(
+                            _downloadingModels
+                                ? tr('downloading')
+                                : (_modelPath == null || _projectorPath == null
+                                    ? tr('downloadModels')
+                                    : tr('downloadAgain')),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        if (_downloadingModels)
+                          TextButton(
+                            onPressed: _cancelModelDownload,
+                            child: Text(tr('cancelDownload')),
+                          ),
+                        TextButton(
+                          onPressed: _showSettings,
+                          child: Text(tr('setupAction')),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
