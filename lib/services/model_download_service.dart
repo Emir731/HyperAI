@@ -15,7 +15,7 @@ class ModelDownloadProgress {
   final int totalBytes;
 
   double get fraction =>
-      totalBytes == 0 ? 0 : (receivedBytes / totalBytes).clamp(0, 1);
+      totalBytes == 0 ? 0 : (receivedBytes / totalBytes).clamp(0, 1).toDouble();
 }
 
 class ModelFiles {
