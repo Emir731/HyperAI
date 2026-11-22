@@ -205,6 +205,11 @@ class _ChatPageState extends State<ChatPage> {
       final files = await _modelDownloader.downloadAll(
         onProgress: (progress) {
           if (!mounted) return;
+          final shouldRefresh =
+              progress.receivedBytes - _downloadedBytes >= 2 * 1024 * 1024 ||
+              progress.fileName == 'Complete' ||
+              progress.receivedBytes == progress.totalBytes;
+          if (!shouldRefresh) return;
           setState(() {
             _downloadedBytes = progress.receivedBytes;
             _downloadTotalBytes = progress.totalBytes;
@@ -1095,14 +1100,14 @@ class _ChatPageState extends State<ChatPage> {
                   _fileRow(
                     tr('mainModel'),
                     _modelPath,
-                    'Qwen3.5-4B-Q4_K_M.gguf',
+                    'qwen3.5-4b-Q4_K_M.gguf',
                     _chooseModel,
                   ),
                   const SizedBox(height: 12),
                   _fileRow(
                     tr('projector'),
                     _projectorPath,
-                    'mmproj-qwen3.5-4b-f16.gguf',
+                    'mmproj-qwen3.5-4b-F16.gguf',
                     _chooseProjector,
                   ),
                   const SizedBox(height: 18),
