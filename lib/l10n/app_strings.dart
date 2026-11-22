@@ -170,4 +170,3 @@ class AppStrings {
   String operator [](String key) =>
       values[language]?[key] ?? values['en']![key] ?? key;
 }
-

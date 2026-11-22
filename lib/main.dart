@@ -549,10 +549,7 @@ class _ChatPageState extends State<ChatPage> {
         IconButton(
           tooltip: tr('model'),
           onPressed: _showSettings,
-          icon: Icon(
-            PhosphorIconsRegular.slidersHorizontal,
-            color: _muted,
-          ),
+          icon: Icon(PhosphorIconsRegular.slidersHorizontal, color: _muted),
         ),
         IconButton(
           tooltip: tr('new'),
@@ -700,7 +697,11 @@ class _ChatPageState extends State<ChatPage> {
                 color: _panel2,
                 borderRadius: BorderRadius.circular(_radius),
               ),
-              child: const Icon(PhosphorIconsRegular.sparkle, color: _accent, size: 24),
+              child: const Icon(
+                PhosphorIconsRegular.sparkle,
+                color: _accent,
+                size: 24,
+              ),
             ),
             const SizedBox(height: 26),
             Text(
@@ -1174,4 +1175,3 @@ class _ChatPageState extends State<ChatPage> {
     ),
   );
 }
-

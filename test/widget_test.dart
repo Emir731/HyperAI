@@ -11,4 +11,3 @@ void main() {
     expect(find.textContaining('Load your local model'), findsOneWidget);
   });
 }
-

@@ -43,4 +43,3 @@ class LocalInferenceService {
     params: GenerationParams(maxTokens: maxTokens, temp: temperature),
   );
 }
-
